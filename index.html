@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#0a0e1a" />
+    <title>HamLerc Navigation</title>
+    <meta name="description" content="Voice-powered assistive navigation for the visually impaired" />
+    <link rel="manifest" href="/mobile/manifest.json" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="/mobile/style.css" />
+</head>
+
+<body>
+
+    <!-- Connection setup (shown when hosted externally, e.g. GitHub Pages) -->
+    <div id="connect-overlay" style="display:none;">
+        <div
+            style="position:fixed;inset:0;z-index:3000;background:#0a0e1a;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+            <div
+                style="font-size:28px;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#6366f1,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                📍 HamLerc</div>
+            <div style="font-size:13px;color:#94a3b8;margin-bottom:32px;text-align:center;">Connect to your PC's
+                navigation server</div>
+
+            <div style="width:100%;max-width:320px;">
+                <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Server IP
+                    Address</label>
+                <input id="server-ip" type="text" placeholder="e.g. 192.168.1.5"
+                    style="width:100%;padding:14px 16px;border-radius:10px;border:1px solid rgba(99,102,241,0.3);background:rgba(17,24,39,0.8);color:#f1f5f9;font-size:16px;font-family:Inter,sans-serif;outline:none;margin-bottom:8px;" />
+                <div style="font-size:11px;color:#64748b;margin-bottom:20px;">Run <code
+                        style="background:rgba(99,102,241,0.15);padding:2px 6px;border-radius:4px;color:#818cf8;">python server.py</code>
+                    on your PC to see the IP</div>
+
+                <button id="connect-btn" onclick="connectToServer()"
+                    style="width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(135deg,#6366f1,#4f46e5);color:white;font-size:15px;font-weight:600;font-family:Inter,sans-serif;cursor:pointer;">
+                    Connect
+                </button>
+                <div id="connect-error"
+                    style="color:#ef4444;font-size:12px;margin-top:10px;text-align:center;display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay">
+        <div class="loading-title">HamLerc</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loading-status">Connecting to server...</div>
+    </div>
+
+    <!-- Map -->
+    <div id="map"></div>
+
+    <!-- Top status bar -->
+    <div id="status-bar">
+        <div class="status-left">
+            <div class="status-logo">
+                <span>📍 HamLerc</span>
+            </div>
+            <div class="status-indicators">
+                <div class="status-dot disconnected" id="dot-server" title="Server"></div>
+                <div class="status-dot disconnected" id="dot-gps" title="GPS"></div>
+            </div>
+        </div>
+        <div class="status-right">
+            <div class="status-text" id="status-text">Offline</div>
+        </div>
+    </div>
+
+    <!-- Navigation summary (shown during active navigation) -->
+    <div id="nav-summary">
+        <div class="nav-summary-row">
+            <div>
+                <div class="nav-eta" id="nav-eta"></div>
+                <div class="nav-distance" id="nav-dist"></div>
+            </div>
+        </div>
+        <div class="nav-current-step" id="nav-current-step"></div>
+    </div>
+
+    <!-- Prompt card (conversation prompts) -->
+    <div id="prompt-card">
+        <div id="prompt-text">Where would you like to go?</div>
+        <div id="prompt-subtext">Tap the microphone and say your destination</div>
+    </div>
+
+    <!-- Transcript bubble (shows what user said) -->
+    <div id="transcript-bubble"></div>
+
+    <!-- Info panel (route selection, step list) -->
+    <div id="info-panel">
+        <div class="panel-content">
+            <div class="panel-handle"></div>
+            <div class="panel-title" id="panel-title"></div>
+            <div class="panel-subtitle" id="panel-subtitle"></div>
+            <div id="panel-body"></div>
+        </div>
+    </div>
+
+    <!-- Voice action button -->
+    <div id="voice-btn-container">
+        <button id="voice-btn" aria-label="Speak">🎤</button>
+        <div id="voice-hint">Tap to speak</div>
+    </div>
+
+    <!-- Arrived overlay -->
+    <div id="arrived-overlay">
+        <div class="arrived-icon">🎉</div>
+        <div class="arrived-title">You've Arrived!</div>
+        <div class="arrived-subtitle" id="arrived-dest"></div>
+        <button class="arrived-btn" id="arrived-btn">Navigate Again</button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/mobile/app.js"></script>
+</body>
+
+</html>
