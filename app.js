@@ -7,17 +7,17 @@
  */
 
 // ── API base URL ──────────────────────────────────────────────────────────
-// If hosted on GitHub Pages, user must set their PC's local IP.
-// If served from the FastAPI server itself, same-origin works automatically.
+// Only show IP-connect screen on GitHub Pages. Everywhere else (localhost,
+// cloudflare tunnel, local IP) the server is serving us — use same origin.
 function getApiBase() {
-    // If served from the backend directly (port 8000), use same origin
-    if (window.location.port === '8000') {
-        return window.location.origin;
+    const host = window.location.hostname;
+    // GitHub Pages → need manual backend config
+    if (host.endsWith('.github.io')) {
+        const saved = localStorage.getItem('hamlerc_backend');
+        return saved || null;
     }
-    // Otherwise check localStorage for saved backend IP
-    const saved = localStorage.getItem('hamlerc_backend');
-    if (saved) return saved;
-    return null;
+    // Everything else (localhost, tunnel, local IP) → same origin
+    return window.location.origin;
 }
 
 let API = getApiBase();
@@ -163,12 +163,18 @@ function updateUserMarker(lat, lng) {
             icon: L.divIcon({
                 className: '',
                 html: '<div class="user-marker"></div>',
-                iconSize: [18, 18],
-                iconAnchor: [9, 9],
-            })
+                iconSize: [24, 24],
+                iconAnchor: [12, 12],
+            }),
+            zIndexOffset: 9999,  // Always on top of route markers
         }).addTo(map);
     } else {
         userMarker.setLatLng([lat, lng]);
+    }
+
+    // During navigation, keep the map centered on the user
+    if (navState === 'NAVIGATING') {
+        map.panTo([lat, lng], { animate: true, duration: 0.5 });
     }
 }
 
