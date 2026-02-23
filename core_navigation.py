@@ -45,7 +45,7 @@ except ImportError:
 # Configuration
 # ---------------------------------------------------------------------------
 
-GOOGLE_MAPS_API_KEY = "AIzaSyDfw239syi91gepUcfKVuqTxKH5XwLDXWQ"
+GOOGLE_MAPS_API_KEY = "MAPS API KEY"
 
 # How many alternative routes to request (1 = no alternatives, max 3)
 MAX_ALTERNATIVES = 3
